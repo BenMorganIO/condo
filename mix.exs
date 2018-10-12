@@ -29,7 +29,8 @@ defmodule Condo.MixProject do
   defp deps do
     [
       {:ecto, "~> 2.2"},
-      {:postgrex, ">= 0.11.0", optional: true}
+      {:postgrex, ">= 0.11.0", optional: true},
+      {:ex_doc, ">= 0.0.0", only: :dev}
     ]
   end
 end
