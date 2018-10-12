@@ -1,5 +1,5 @@
 defmodule Condo.Migration do
-  @migration_namespace Application.fetch_env!(:condo, :migration_namespace)
+  @migration_namespace Application.get_env(:condo, :migration_namespace, "")
 
   alias Ecto.Migration.{Runner, SchemaMigration}
 
