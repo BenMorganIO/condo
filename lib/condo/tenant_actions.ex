@@ -28,7 +28,7 @@ defmodule Condo.TenantActions do
   end
 
   def create_schema(repo, tenant) do
-    repo.query("CREATE SCHEMA #{schema_prefix(tenant)}", [])
+    repo.query("CREATE SCHEMA \"#{schema_prefix(tenant)}\"", [])
   end
 
   def migrate_tenant(repo, tenant) do
