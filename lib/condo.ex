@@ -79,15 +79,24 @@ defmodule Condo do
   """
   @spec migrate_tenant(queryable, tenant_id) :: list({:ok, non_neg_integer()})
   def migrate_tenant(repo, tenant) do
-    run_migration(repo, prefix: prefix(tenant))
+    run_migration(repo, :up, prefix: prefix(tenant))
   end
 
-  defp run_migration(repo, opts) do
+  @doc """
+  Rollsback the latest migration. First checks for a `change/0` function and
+  then checks for a `down/0` function.
+  """
+  @spec rollback_tenant(queryable, tenant_id) :: {:ok, non_neg_integer()}
+  def rollback_tenant(repo, tenant) do
+    run_migration(repo, :down, prefix: prefix(tenant))
+  end
+
+  defp run_migration(repo, direction, opts) do
     opts =
       if opts[:to] || opts[:step] || opts[:all],
         do: opts,
         else: Keyword.put(opts, :all, true)
 
-    Migration.run(repo, opts)
+    Migration.run(repo, direction, opts)
   end
 end

@@ -26,9 +26,5 @@ be found at [https://hexdocs.pm/condo](https://hexdocs.pm/condo).
 ## To Do
 
 - README documentation
-- Mix task to generate new migrations
-- Mix task to run a migration
-- Mix task and function to rollback a migration
 - `Schema` module to cache migration SQL for creating and running new migrations
-- Ensure migrations can be run async
 - Setup tests
