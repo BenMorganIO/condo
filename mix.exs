@@ -28,9 +28,10 @@ defmodule Condo.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
+      {:dialyxir, "~> 1.0.0-rc.3", only: [:dev], runtime: false},
       {:ecto, "~> 2.2"},
-      {:postgrex, ">= 0.11.0", optional: true},
-      {:ex_doc, ">= 0.0.0", only: :dev}
+      {:ex_doc, ">= 0.0.0", only: :dev},
+      {:postgrex, ">= 0.11.0", optional: true}
     ]
   end
 end

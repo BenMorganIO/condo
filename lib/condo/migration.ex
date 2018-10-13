@@ -1,8 +1,14 @@
 defmodule Condo.Migration do
+  @moduledoc "Functions for managing migrations with Condo."
+
   @migration_namespace Application.get_env(:condo, :migration_namespace, "")
 
   alias Ecto.Migration.{Runner, SchemaMigration}
 
+  @doc """
+  Runs the migrations for a `repo`. To specify the tenant, pass its schema name
+  as a `prefix` option in the `opts`.
+  """
   def run(repo, opts) do
     SchemaMigration.ensure_schema_migrations_table!(repo, opts[:prefix])
 
@@ -23,15 +29,16 @@ defmodule Condo.Migration do
   end
 
   defp migrate_up(repo, module, opts) do
-    with :ok <- run_up(repo, module, opts),
-         do: schema_migration(repo, module, opts)
+    with {:ok, version} <- run_up(repo, module, opts),
+         :ok <- schema_migration(repo, module, opts),
+         do: {:ok, version}
   end
 
   defp run_up(repo, module, opts) do
     if Keyword.has_key?(module.__info__(:functions), :up) do
-      Runner.run(repo, module, :forward, :up, :up, opts)
+      {Runner.run(repo, module, :forward, :up, :up, opts), module.version}
     else
-      Runner.run(repo, module, :forward, :change, :up, opts)
+      {Runner.run(repo, module, :forward, :change, :up, opts), module.version}
     end
   end
 
