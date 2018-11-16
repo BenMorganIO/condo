@@ -19,16 +19,12 @@ defmodule Condo.MixProject do
   end
 
   # Run "mix help compile.app" to learn about applications.
-  def application do
-    [
-      extra_applications: [:logger]
-    ]
-  end
+  def application, do: [extra_applications: [:logger]]
 
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:dialyxir, "~> 1.0.0-rc.3", only: [:dev], runtime: false},
+      {:dialyxir, "~> 1.0.0-rc.4", only: [:dev], runtime: false},
       {:ecto, "~> 2.2"},
       {:ex_doc, ">= 0.0.0", only: :dev},
       {:postgrex, ">= 0.11.0", optional: true}
