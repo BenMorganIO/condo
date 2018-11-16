@@ -14,7 +14,14 @@ defmodule Condo.MixProject do
         licenses: ["MIT"],
         links: %{"GitHub" => "https://github.com/BenMorganIO/condo"}
       ],
-      source_url: "https://github.com/BenMorganIO/condo"
+      source_url: "https://github.com/BenMorganIO/condo",
+      test_coverage: [tool: ExCoveralls],
+      preferred_cli_env: [
+        coveralls: :test,
+        "coveralls.detail": :test,
+        "coveralls.post": :test,
+        "coveralls.html": :test
+      ]
     ]
   end
 
@@ -27,6 +34,8 @@ defmodule Condo.MixProject do
       {:dialyxir, "~> 1.0.0-rc.4", only: [:dev], runtime: false},
       {:ecto, "~> 2.2"},
       {:ex_doc, ">= 0.0.0", only: :dev},
+      {:excoveralls, "~> 0.10", only: :test},
+      {:junit_formatter, ">= 0.0.0", only: :test},
       {:postgrex, ">= 0.11.0", optional: true}
     ]
   end
