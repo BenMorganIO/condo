@@ -1,0 +1,51 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/elixir:1.7.3
+        environment:
+          MIX_ENV: test
+          TERM: xterm-256color
+
+      # - image: circleci/postgres:10.5-ram
+
+    working_directory: ~/repo
+    steps:
+      - checkout
+
+      - run: mix do local.hex --force, local.rebar --force
+
+      - restore_cache:
+          keys:
+            - cache-{{ .Branch }}-{{ checksum "mix.lock" }}
+            - cache-{{ .Branch }}
+            - cache
+
+      - run: mix do deps.get, compile
+
+      - save_cache:
+          key: cache
+          paths:
+            - deps
+            - _build
+      - save_cache:
+          key: cache-{{ .Branch }}
+          paths:
+            - deps
+            - _build
+      - save_cache:
+          key: cache-{{ .Branch }}-{{ checksum "mix.lock" }}
+          paths:
+            - deps
+            - _build
+
+      # - run:
+      #     name: Wait for DB
+      #     command: dockerize -wait tcp://localhost:5432 -timeout 1m
+
+      # - run: mix do ecto.create, ecto.migrate
+      - run: mix coveralls.json
+      - run: bash <(curl -s https://codecov.io/bash)
+
+      - store_test_results:
+          path: _build/test/lib/ocelot

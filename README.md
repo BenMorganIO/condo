@@ -1,5 +1,8 @@
 # Condo
 
+[![CircleCI](https://circleci.com/gh/BenMorganIO/condo.svg?style=svg)](https://circleci.com/gh/BenMorganIO/condo)
+[![codecov](https://codecov.io/gh/BenMorganIO/condo/branch/master/graph/badge.svg)](https://codecov.io/gh/BenMorganIO/condo)
+
 Condo is a multi-tenant adapter for Ecto. You can use this to create new
 schemata in PostgreSQL. It's main advantages are:
 
