@@ -3,6 +3,7 @@ defmodule Condo.Migration do
 
   @migration_namespace Application.get_env(:condo, :migration_namespace, "")
 
+  alias Ecto.Migrator
   alias Ecto.Migration.{Runner, SchemaMigration}
 
   def namespace, do: @migration_namespace
@@ -31,12 +32,12 @@ defmodule Condo.Migration do
   end
 
   defp pending_migrations(repo, prefix) do
-    migrated_versions = SchemaMigration.migrated_versions(repo, prefix)
+    migrated_versions = Migrator.migrated_versions(repo, prefix: prefix)
     Enum.filter(collect_migrations(), &!Enum.member?(migrated_versions, &1.version))
   end
 
   defp migrated_migrations(repo, prefix) do
-    migrated_versions = SchemaMigration.migrated_versions(repo, prefix)
+    migrated_versions = Migrator.migrated_versions(repo, prefix: prefix)
     Enum.filter(collect_migrations(), &Enum.member?(migrated_versions, &1.version))
   end
 
@@ -62,11 +63,13 @@ defmodule Condo.Migration do
   end
 
   defp runner(repo, module, direction, opts) do
+    version = module.version
+
     if Keyword.has_key?(module.__info__(:functions), :up) do
-      {Runner.run(repo, module, :forward, direction, direction, opts), module.version}
+      {Runner.run(repo, version, module, :forward, direction, direction, opts), version}
     else
       runner_direction = if direction == :up, do: :forward, else: :backward
-      {Runner.run(repo, module, runner_direction, :change, direction, opts), module.version}
+      {Runner.run(repo, version, module, runner_direction, :change, direction, opts), version}
     end
   end
 

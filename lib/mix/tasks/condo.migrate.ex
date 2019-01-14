@@ -2,6 +2,7 @@ defmodule Mix.Tasks.Condo.Migrate do
   use Mix.Task
 
   import Mix.Ecto
+  import Mix.EctoSQL
 
   @shortdoc "Runs the migrations for the tenants."
 

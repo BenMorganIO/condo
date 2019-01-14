@@ -2,6 +2,7 @@ defmodule Mix.Tasks.Condo.Rollback do
   use Mix.Task
 
   import Mix.Ecto
+  import Mix.EctoSQL
 
   @shortdoc "Rollsback the latest migration for each tenant."
 

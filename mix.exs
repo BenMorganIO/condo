@@ -32,7 +32,8 @@ defmodule Condo.MixProject do
   defp deps do
     [
       {:dialyxir, "~> 1.0.0-rc.4", only: [:dev], runtime: false},
-      {:ecto, "~> 2.2"},
+      {:ecto, "~> 3.0"},
+      {:ecto_sql, "~> 3.0"},
       {:ex_doc, ">= 0.0.0", only: :dev},
       {:excoveralls, "~> 0.10", only: :test},
       {:junit_formatter, ">= 0.0.0", only: :test},
