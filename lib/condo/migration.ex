@@ -13,7 +13,7 @@ defmodule Condo.Migration do
   as a `prefix` option in the `opts`.
   """
   def run(repo, :up, opts) do
-    SchemaMigration.ensure_schema_migrations_table!(repo, opts[:prefix])
+    SchemaMigration.ensure_schema_migrations_table!(repo, opts)
 
     repo
     |> pending_migrations(opts[:prefix])
