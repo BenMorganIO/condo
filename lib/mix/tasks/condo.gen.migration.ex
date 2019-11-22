@@ -33,46 +33,52 @@ defmodule Mix.Tasks.Condo.Gen.Migration do
   def run(args) do
     no_umbrella!("condo.gen.migration")
     repos = parse_repo(args)
+    timestamp = create_timestamp()
 
-    Enum.each repos, fn repo ->
+    repos
+    |> Enum.map(fn repo ->
+      ensure_repo(repo, args)
+
       case OptionParser.parse(args, switches: @switches) do
         {opts, [name], _} ->
-          write_migration(repo, args, name, opts)
+          path = underscore(Migration.namespace())
+          relative_path = Path.relative_to("lib/#{path}", Mix.Project.app_path())
+          {relative_path, name, opts}
+
         {_, _, _} ->
-          Mix.raise "expected cond.gen.migration to receive the migration " <>
-                    "file name, got: #{inspect Enum.join(args, " ")}"
+          Mix.raise(
+            "expected cond.gen.migration to receive the migration " <>
+              "file name, got: #{inspect(Enum.join(args, " "))}"
+          )
       end
-    end
+    end)
+    |> Enum.uniq()
+    |> Enum.each(fn {path, name, opts} -> write_migration(path, timestamp, name, opts) end)
   end
 
-  defp write_migration(repo, args, name, opts) do
-    ensure_repo(repo, args)
-
-    path = underscore(Migration.namespace)
-    relative_path = Path.relative_to("lib/" <> path, Mix.Project.app_path)
-    timestamp = create_timestamp()
+  defp write_migration(relative_path, timestamp, name, opts) do
+    create_directory(relative_path)
     file = Path.join(relative_path, "#{timestamp}_#{underscore(name)}.ex")
-    create_directory relative_path
 
     assigns = [
       change: opts[:change],
       name: camelize(name),
-      namespace: Migration.namespace,
+      namespace: Migration.namespace(),
       timestamp: timestamp
     ]
 
-    create_file file, migration_template(assigns)
+    create_file(file, migration_template(assigns))
   end
 
   defp create_timestamp do
-    {{y, m, d}, {hh, mm, ss}} = :calendar.universal_time
+    {{y, m, d}, {hh, mm, ss}} = :calendar.universal_time()
     "#{y}#{pad(m)}#{pad(d)}#{pad(hh)}#{pad(mm)}#{pad(ss)}"
   end
 
-  defp pad(i) when i < 10, do: << ?0, ?0 + i >>
+  defp pad(i) when i < 10, do: <<?0, ?0 + i>>
   defp pad(i), do: to_string(i)
 
-  embed_template :migration, """
+  embed_template(:migration, """
   defmodule <%= @namespace %>.<%= @name %> do
     use Ecto.Migration
 
@@ -82,5 +88,5 @@ defmodule Mix.Tasks.Condo.Gen.Migration do
   <%= @change %>
     end
   end
-  """
+  """)
 end
