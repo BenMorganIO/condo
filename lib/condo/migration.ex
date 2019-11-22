@@ -1,12 +1,10 @@
 defmodule Condo.Migration do
   @moduledoc "Functions for managing migrations with Condo."
 
-  @migration_namespace Application.get_env(:condo, :migration_namespace, "")
-
   alias Ecto.Migrator
   alias Ecto.Migration.{Runner, SchemaMigration}
 
-  def namespace, do: @migration_namespace
+  def namespace, do: Application.get_env(:condo, :migration_namespace, "")
 
   @doc """
   Runs the migrations for a `repo`. To specify the tenant, pass its schema name
@@ -26,14 +24,14 @@ defmodule Condo.Migration do
     module =
       repo
       |> migrated_migrations(opts[:prefix])
-      |> List.last
+      |> List.last()
 
     migrate_down(repo, module, opts)
   end
 
   defp pending_migrations(repo, prefix) do
     migrated_versions = Migrator.migrated_versions(repo, prefix: prefix)
-    Enum.filter(collect_migrations(), &!Enum.member?(migrated_versions, &1.version))
+    Enum.filter(collect_migrations(), &(!Enum.member?(migrated_versions, &1.version)))
   end
 
   defp migrated_migrations(repo, prefix) do
@@ -42,9 +40,9 @@ defmodule Condo.Migration do
   end
 
   defp collect_migrations do
-    namespace = Regex.escape(@migration_namespace)
+    namespace = Regex.escape(namespace())
 
-    :code.all_loaded
+    :code.all_loaded()
     |> Enum.map(&elem(&1, 0))
     |> Enum.filter(&Regex.match?(~r/#{namespace}/, to_string(&1)))
     |> Enum.sort(&(&1.version <= &2.version))
