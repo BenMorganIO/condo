@@ -130,6 +130,19 @@ import Ecto.Query
 User |> where([u], u.email == ^email) |> Condo.prefix(:foo) |> Repo.one()
 ```
 
+### Condo's Repo
+
+Just like apartmentex, Condo supports CRUD functions in parity to `Ecto.Repo`.
+To achieve this, we just do some meta-programming and keep it simple. The main
+different is that we add a second parameter just before the final options to
+specify a region. This will also run a function to figure out which `Repo` to
+use if you're sharding tenants over multiple instances.
+
+```elixir
+Condo.Repo.all(Game, :na1) == Repo.NA1.all(Game, prefix: Condo.prefix(:na1))
+Condo.Repo.all(Game, :sa1) == Repo.SA1.all(Game, prefix: Condo.prefix(:sa1))
+```
+
 ## To Do
 
 - `Schema` module to cache migration SQL for creating and running new migrations
