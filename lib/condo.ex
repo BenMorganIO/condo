@@ -35,6 +35,9 @@ defmodule Condo do
       iex> Condo.prefix("abc")
       "tenant_abc"
 
+      iex> Condo.prefix(:abc)
+      "tenant_abc"
+
       iex> Condo.prefix(%{id: 123})
       "tenant_123"
 
@@ -45,6 +48,7 @@ defmodule Condo do
   def prefix(:public), do: "public"
   def prefix(tenant) when is_integer(tenant), do: "#{@prefix}#{tenant}"
   def prefix(tenant) when is_binary(tenant), do: "#{@prefix}#{tenant}"
+  def prefix(tenant) when is_atom(tenant), do: "#{@prefix}#{tenant}"
   def prefix(tenant), do: prefix(tenant.id)
 
   @spec prefix(queryable, tenant) :: queryable

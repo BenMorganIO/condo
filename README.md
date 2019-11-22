@@ -116,7 +116,7 @@ Repo.all(Product, prefix: "store_#{store.id}")
 # Condo Method with a struct supplied
 Repo.all(Product, prefix: Condo.prefix(store))
 
-# Or pass in a binary or integer without the struct needed
+# Or pass in a binary, atom, or integer without the struct needed
 Repo.all(Product, prefix: Condo.prefix(store.id))
 Repo.all(Product, prefix: Condo.prefix(store.uuid))
 Repo.all(Product, prefix: Condo.prefix(:north_america))
