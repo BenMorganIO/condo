@@ -124,6 +124,10 @@ Repo.all(Product, prefix: Condo.prefix(:north_america))
 # Get back to the public schema just-in-case
 Condo.prefix(:public)
 # => "public"
+
+# Set the prefix on an Ecto.Queryable.t()
+import Ecto.Query
+User |> where([u], u.email == ^email) |> Condo.prefix(:foo) |> Repo.one()
 ```
 
 ## To Do
