@@ -3,13 +3,16 @@ defmodule Condo do
 
   @prefix Application.get_env(:condo, :prefix, "tenant_")
 
-  @type query :: {:ok, %{
-      :rows => nil | [[term()] | binary()],
-      :num_rows => non_neg_integer(),
-      optional(atom()) => any()
-    }} | {:error, Exception.t()}
-  @type queryable :: Ecto.Queryable.t
-  @type tenant_id :: String.t | integer
+  @type query ::
+          {:ok,
+           %{
+             :rows => nil | [[term()] | binary()],
+             :num_rows => non_neg_integer(),
+             optional(atom()) => any()
+           }}
+          | {:error, Exception.t()}
+  @type queryable :: Ecto.Queryable.t()
+  @type tenant_id :: String.t() | integer() | atom()
   @type tenant :: tenant_id | %{id: tenant_id}
 
   alias Condo.Migration
@@ -19,6 +22,12 @@ defmodule Condo do
   that the prefix is for an ID or for a struct.
 
   ## Examples
+
+      iex> Condo.prefix("public")
+      "public"
+
+      iex> Condo.prefix(:public)
+      "public"
 
       iex> Condo.prefix(123)
       "tenant_123"
@@ -31,7 +40,9 @@ defmodule Condo do
 
   """
 
-  @spec prefix(tenant) :: String.t
+  @spec prefix(tenant) :: String.t()
+  def prefix("public"), do: "public"
+  def prefix(:public), do: "public"
   def prefix(tenant) when is_integer(tenant), do: "#{@prefix}#{tenant}"
   def prefix(tenant) when is_binary(tenant), do: "#{@prefix}#{tenant}"
   def prefix(tenant), do: prefix(tenant.id)
@@ -39,7 +50,7 @@ defmodule Condo do
   @spec prefix(queryable, tenant) :: queryable
   def prefix(queryable, tenant) do
     queryable
-    |> Ecto.Queryable.to_query
+    |> Ecto.Queryable.to_query()
     |> Map.put(:prefix, prefix(tenant))
   end
 
@@ -49,7 +60,7 @@ defmodule Condo do
   migration in your migration namespace will run and also write to the
   schema_migrations table that it has ran.
   """
-  @spec new_tenant(queryable, tenant) :: {:ok, String.t, list({:ok, non_neg_integer()})}
+  @spec new_tenant(queryable, tenant) :: {:ok, String.t(), list({:ok, non_neg_integer()})}
   def new_tenant(repo, tenant) do
     with {:ok, _} <- create_schema(repo, tenant) do
       {:ok, prefix(tenant), migrate_tenant(repo, tenant)}

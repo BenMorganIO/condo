@@ -119,6 +119,11 @@ Repo.all(Product, prefix: Condo.prefix(store))
 # Or pass in a binary or integer without the struct needed
 Repo.all(Product, prefix: Condo.prefix(store.id))
 Repo.all(Product, prefix: Condo.prefix(store.uuid))
+Repo.all(Product, prefix: Condo.prefix(:north_america))
+
+# Get back to the public schema just-in-case
+Condo.prefix(:public)
+# => "public"
 ```
 
 ## To Do
