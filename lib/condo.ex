@@ -103,9 +103,7 @@ defmodule Condo do
 
   defp run_migration(repo, direction, opts) do
     opts =
-      if opts[:to] || opts[:step] || opts[:all],
-        do: opts,
-        else: Keyword.put(opts, :all, true)
+      if opts[:to] || opts[:step] || opts[:all], do: opts, else: Keyword.put(opts, :all, true)
 
     Migration.run(repo, direction, opts)
   end
