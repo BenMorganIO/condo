@@ -41,6 +41,9 @@ defmodule Condo do
       iex> Condo.prefix(%{id: 123})
       "tenant_123"
 
+      iex> Condo.prefix("users", :abc)
+      #Ecto.Query<from u0 in "users">
+
   """
 
   @spec prefix(tenant) :: String.t()
@@ -101,10 +104,12 @@ defmodule Condo do
     run_migration(repo, :down, prefix: prefix(tenant))
   end
 
-  defp run_migration(repo, direction, opts) do
+  defp run_migration(repo, :up, opts) do
     opts =
       if opts[:to] || opts[:step] || opts[:all], do: opts, else: Keyword.put(opts, :all, true)
 
-    Migration.run(repo, direction, opts)
+    Migration.run(repo, :up, opts)
   end
+
+  defp run_migration(repo, :down, opts), do: Migration.run(repo, :down, opts)
 end

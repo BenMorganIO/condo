@@ -19,7 +19,7 @@ defmodule Condo.Migration do
   end
 
   def run(repo, :down, opts) do
-    SchemaMigration.ensure_schema_migrations_table!(repo, opts[:prefix])
+    SchemaMigration.ensure_schema_migrations_table!(repo, opts)
 
     module =
       repo
@@ -61,6 +61,7 @@ defmodule Condo.Migration do
   end
 
   defp runner(repo, module, direction, opts) do
+    opts = Keyword.put_new(opts, :log, false)
     version = module.version
 
     if Keyword.has_key?(module.__info__(:functions), :up) do

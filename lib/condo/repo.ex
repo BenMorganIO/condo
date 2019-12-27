@@ -84,11 +84,11 @@ defmodule Condo.Repo do
 
   @spec repo(Condo.tenant()) :: module()
   def repo(tenant) do
-    case Application.fetch_env!(:condo, :repo_mapper) do
-      {module, function_name} -> apply(module, function_name, [tenant])
-      repo when is_atom(repo) -> repo
-      function when is_function(function) -> function.(tenant)
-      _ -> raise "`repo_mapper` config must be a module or a function"
+    case Application.fetch_env(:condo, :repo_mapper) do
+      {:ok, {module, function_name}} -> apply(module, function_name, [tenant])
+      {:ok, repo} when is_atom(repo) -> repo
+      {:ok, function} when is_function(function) -> function.(tenant)
+      :error -> raise "`repo_mapper` config must be a module or a function"
     end
   end
 end
