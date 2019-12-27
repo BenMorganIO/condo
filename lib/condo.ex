@@ -41,6 +41,9 @@ defmodule Condo do
       iex> Condo.prefix(%{id: 123})
       "tenant_123"
 
+      iex> Condo.prefix("users", :abc)
+      #Ecto.Query<from u0 in "users">
+
   """
 
   @spec prefix(tenant) :: String.t()
